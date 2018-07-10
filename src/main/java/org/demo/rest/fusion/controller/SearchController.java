@@ -2,6 +2,7 @@ package org.demo.rest.fusion.controller;
 
 import org.demo.rest.fusion.domain.Author;
 import org.demo.rest.fusion.domain.Count;
+import org.demo.rest.fusion.domain.PercentileRank;
 import org.demo.rest.fusion.service.FusionDemoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -32,4 +33,10 @@ public class SearchController {
     public Count getTopCoAuthorPaperCount() {
         return fusionDemoService.getTopCoAuthorPaperCount();
     }
+
+    @GetMapping(value = "/co-author/percentile-rank")
+    public List<PercentileRank> getCoAuthorPaperCountPercentileRank() {
+        return fusionDemoService.getCoAuthorPaperCountPercentileRank();
+    }
+
 }

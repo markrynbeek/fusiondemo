@@ -2,6 +2,7 @@ package org.demo.rest.fusion.service;
 
 import org.demo.rest.fusion.domain.Author;
 import org.demo.rest.fusion.domain.Count;
+import org.demo.rest.fusion.domain.PercentileRank;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 @Service
@@ -24,7 +24,7 @@ public class FusionDemoService {
     FusionAuthenticationService fusionAuthenticationService;
 
     @Value("${fusion.base.url}")
-    private String basehUrl;
+    private String baseUrl;
 
     @Value("${fusion.coauthor.query.path}")
     private String coAuthorQueryPath;
@@ -64,12 +64,37 @@ public class FusionDemoService {
         }
     }
 
+    public List<PercentileRank> getCoAuthorPaperCountPercentileRank() {
+        JSONArray authorArray = performCoAuthorQuery(1);
+        SortedMap<Integer,Integer> paperCountFreq = new TreeMap<>();
+        int total=0;
+        for (int i=0; i<authorArray.length(); i++) {
+            JSONObject item = authorArray.getJSONObject(i);
+            int paperCount = item.getInt("count");
+            int count = paperCountFreq.containsKey(paperCount) ? paperCountFreq.get(paperCount) : 0;
+            paperCountFreq.put(paperCount, count + 1);
+            total += 1;
+        }
+        List<PercentileRank> percentileRanks = new ArrayList();
+        int countSoFar=0;
+        for(int i : paperCountFreq.keySet()){
+            double percentileRank = ((countSoFar + (0.5 * paperCountFreq.get(i) )) / total ) * 100;
+            PercentileRank pr = new PercentileRank();
+            pr.setCount(i);
+            pr.setRank(percentileRank);
+            percentileRanks.add(pr);
+            countSoFar += paperCountFreq.get(i);
+        }
+        return percentileRanks;
+    }
+
+
     private JSONArray performCoAuthorQuery(int minimumPapers) {
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.add("Cookie", fusionAuthenticationService.getCookie());
         HttpEntity requestEntity = new HttpEntity(null, requestHeaders);
         RestTemplate restTemplate = new RestTemplate();
-        String url = basehUrl + coAuthorQueryPath;
+        String url = baseUrl + coAuthorQueryPath;
         url = url.replace("MIN_COUNT",String.valueOf(minimumPapers));
         ResponseEntity response = restTemplate.exchange(url,HttpMethod.GET,requestEntity,String.class);
         JSONObject jsonObject = new JSONObject(response.getBody().toString());
