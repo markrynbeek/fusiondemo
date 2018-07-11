@@ -6,6 +6,10 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * Manages Fusion authentication, cookie based.
+ */
+
 @Service
 public class FusionAuthenticationService {
 
@@ -22,13 +26,11 @@ public class FusionAuthenticationService {
     private String authPassword;
 
     /**
-     * Returns a cookie for querying the Fusion Query Pipelines API
+     * Returns a cookie that can used to authenticate for Fusion Query Pipelines API
+     * TODO: use a cache to re-use same cookie within a given time span instead of doing a request every time
      * @return cookie
      */
     public String getCookie() {
-
-        // TODO use a cache to re-use same cookie within a given time span instead of doing a request every time
-
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
@@ -46,12 +48,8 @@ public class FusionAuthenticationService {
         return cookie;
     }
 
-    //TODO can this be done more elegantly ?
     private String createCredentialInput() {
         return "{\"username\":\"" + authUsername + "\",\"password\":\"" + authPassword + "\"}";
 
     }
 }
-
-
-

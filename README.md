@@ -1,19 +1,26 @@
 
-This project demonstrates a small Spring Boot REST service, using a Fusion server in the background.
+This project demonstrates a small Spring Boot REST service relying on a Fusion server in the background.
 The project was set up using Spring Initializr.
 
 Technology stack:
   - RESTful web services
-  - Sprint (Boot)
+  - Spring (Boot)
   - Tomcat
   - Fusion server
+  - Maven
 
-See the Maven pom.xml file for dependencies.
-
+Library summary (see also Maven pom.xml file for dependency details):
+        spring-boot-starter-actuator
+        spring-boot-starter-web
+        spring-boot-devtools
+        spring-boot-starter-test
+        springfox-swagger2
+        springfox-swagger-ui
+        json
 
 Building the service
 --------------------
-This is a Maven build:
+This is a Maven build set up.
  - command line: use "mvn clean install" to build and test the project.
  - IDE: open the project (pom file) and build the project there. Default is for Intellij. 
   
@@ -32,11 +39,4 @@ API documentation (Swagger)
 
 Invoking the service
 --------------------
-see Swagger
-
-   
-
-
-
-
-
+See Swagger for details and API

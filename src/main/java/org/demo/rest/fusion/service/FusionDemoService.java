@@ -16,6 +16,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
+/**
+ *  Backs the search controller with queries to the Fusion backend.
+ */
 
 @Service
 public class FusionDemoService {
@@ -64,6 +67,12 @@ public class FusionDemoService {
         }
     }
 
+    /**
+     * Returns a percentile rank of the number of co-authored papers in the dataset.
+     * @see <a href="https://en.wikipedia.org/wiki/Percentile_rank">https://en.wikipedia.org/wiki/Percentile_rank</a>
+     *
+     * @return List of percentil ranks
+     */
     public List<PercentileRank> getCoAuthorPaperCountPercentileRank() {
         JSONArray authorArray = performCoAuthorQuery(1);
         SortedMap<Integer,Integer> paperCountFreq = new TreeMap<>();
@@ -88,7 +97,11 @@ public class FusionDemoService {
         return percentileRanks;
     }
 
-
+    /**
+     * Performs a pivot facet query on authors.
+     * @param minimumPapers cut off for number of papers
+     * @return an array of authors as retrieved from Fusion
+     */
     private JSONArray performCoAuthorQuery(int minimumPapers) {
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.add("Cookie", fusionAuthenticationService.getCookie());
